@@ -7,7 +7,7 @@ import React, {
   MouseEvent,
 } from "react";
 import { History } from "history";
-import {isUuid} from "uuidv4";
+import { isUuid } from "uuidv4";
 import Index from "./pages/Index";
 import Edit from "./pages/Edit";
 
@@ -57,5 +57,5 @@ export const Link: React.FC<LinkProps> = ({ href, as = "a", children }) => {
     },
     [history, href]
   );
-  return React.createElement(as, { onClick, href },children);
+  return React.createElement(as, { onClick, href }, children);
 };
