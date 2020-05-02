@@ -1,37 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
-import { runJSTest } from "./sandbox/javascript";
-
-const initialSources: { [p: string]: string } = {
-  "index.test.js": `const { answer } = require('index.js')
-  
-  describe('computed on The Earth', () => {
-      test('Life, the Universe, and Everything is 42.', () => {
-    expect(answer()).toBe(42)
-  })
-  })
-  `,
-  "index.js": `function answer() {
-    return 8 * 6;
-  }
-
-  module.exports = {
-    answer
-  }
-  `,
-};
+import "monaco-editor/esm/vs/language/typescript/monaco.contribution";
+import "monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution";
+import "monaco-editor/esm/vs/basic-languages/typescript/typescript.contribution";
 
 const App: React.FC = () => {
-  const [stdout, setStdout] = useState("");
+  const editorDiv = React.useRef<HTMLDivElement>(null);
+  const editorRef = React.useRef<monaco.editor.IStandaloneCodeEditor>();
 
-  useEffect(() => {
-    runJSTest(initialSources, "index.test.js", setStdout);
+  React.useLayoutEffect(() => {
+    editorRef.current = monaco.editor.create(editorDiv.current!, {
+      automaticLayout: true,
+      value: "const hoge = 1\n",
+      language: "javascript",
+    });
+    editorRef.current.focus();
+    return () => {
+      if (editorRef.current) {
+        editorRef.current.dispose();
+        editorRef.current = undefined;
+      }
+    };
   }, []);
 
   return (
-    <code>
-      <pre>{stdout}</pre>
-    </code>
+    <div style={{ width: "100vw", height: "100vh" }}>
+      <div ref={editorDiv} style={{ height: "100%" }} />
+    </div>
   );
 };
 
